@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edmx:Edmx Version="4.0"
+  xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+  xmlns="http://docs.oasis-open.org/odata/ns/edm"
+  xmlns:UI="com.sap.vocabularies.UI.v1"
+  xmlns:SAP__capabilities="Org.OData.Capabilities.V1"
+  xmlns:Common="com.sap.vocabularies.Common.v1">
+    <edmx:Reference Uri="/sap/opu/odata4/sap/zsb_ld6_numerado_ui4/srvd/sap/zsd_ld6_numerados/0001/$metadata">
+        <edmx:Include Namespace="com.sap.gateway.srvd.zsd_ld6_numerados.v0001"/>
+    </edmx:Reference>
+
+  <edmx:Reference Uri="com.sap.vocabularies.UI.v1.xml">
+    <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+  </edmx:Reference>
+
+  <edmx:Reference Uri="Org.OData.Capabilities.V1.xml">
+    <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities"/>
+  </edmx:Reference>
+
+  <edmx:Reference Uri="com.sap.vocabularies.Common.v1.xml">
+    <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+  </edmx:Reference>
+
+  <edmx:DataServices>
+    <Schema Namespace="Local.Annotations">
+      <!-- Pisamos LineItem de LibroDiarioNumeradoType sin el DataFieldForAction -->
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType">
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="CompanyCode"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="AccountingDocumentType"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="DocumentDate"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="AccountingDocument"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="GLAccount"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="GLAccountName"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="AccountingDocumentTypeText"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="TransactionCurrency"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Debe"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Haber"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Numerador"/></Record>
+          </Collection>
+        </Annotation>
+        
+        <!-- CLAVE: Añadir DocumentDate a SelectionFields -->
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>FiscalYear</PropertyPath>
+            <PropertyPath>CompanyCode</PropertyPath>
+            <PropertyPath>DocumentDate</PropertyPath>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      
+      <!-- Labels para los campos de la entidad -->
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/FiscalYear">
+        <Annotation Term="Common.Label" String="Ejercicio Fiscal"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/CompanyCode">
+        <Annotation Term="Common.Label" String="Sociedad"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/AccountingDocumentType">
+        <Annotation Term="Common.Label" String="Clase de Documento"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/DocumentDate">
+        <Annotation Term="Common.Label" String="Fecha del Documento"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/AccountingDocument">
+        <Annotation Term="Common.Label" String="Número de Documento"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/GLAccount">
+        <Annotation Term="Common.Label" String="Cuenta de Mayor"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/GLAccountName">
+        <Annotation Term="Common.Label" String="Denominación de Cuenta"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/AccountingDocumentTypeText">
+        <Annotation Term="Common.Label" String="Descripción Clase de Documento"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/TransactionCurrency">
+        <Annotation Term="Common.Label" String="Moneda"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/Debe">
+        <Annotation Term="Common.Label" String="Debe"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/Haber">
+        <Annotation Term="Common.Label" String="Haber"/>
+      </Annotations>
+      
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/Numerador">
+        <Annotation Term="Common.Label" String="Numerador"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/AbsoluteExchangeRate">
+        <Annotation Term="Common.Label" String="Tasa de Cambio Absoluta"/>
+      </Annotations>
+
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/AmountInGlobalCurrency">
+        <Annotation Term="Common.Label" String="Monto en Moneda Global"/>
+      </Annotations>
+
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/AmountInTransactionCurrency">
+        <Annotation Term="Common.Label" String="Monto en Moneda Transacción"/>
+      </Annotations>
+
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.LibroDiarioNumeradoType/GlobalCurrency">
+        <Annotation Term="Common.Label" String="Moneda Global"/>
+      </Annotations>
+      
+      <!-- Anotación a nivel de EntitySet usando el alias correcto -->
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.Container/LibroDiarioNumerado">
+        <Annotation Term="SAP__capabilities.FilterRestrictions">
+          <Record Type="SAP__capabilities.FilterRestrictionsType">
+            <PropertyValue Property="RequiredProperties">
+              <Collection>
+                <PropertyPath>FiscalYear</PropertyPath>
+                <PropertyPath>CompanyCode</PropertyPath>
+                <PropertyPath>DocumentDate</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="FilterExpressionRestrictions">
+              <Collection>
+                <Record Type="SAP__capabilities.FilterExpressionRestrictionType">
+                  <PropertyValue Property="Property" PropertyPath="DocumentDate"/>
+                  <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                  <!-- SingleRange provides: From/To, From, To, Year To Date, Today, Yesterday, Tomorrow -->
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

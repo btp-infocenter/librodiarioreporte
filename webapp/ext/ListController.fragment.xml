@@ -1,0 +1,6 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+  <Toolbar>
+    <ToolbarSpacer/>
+    <CheckBox id="chkVisual" text="Mi Checkbox" select="onSelectCheckbox"/>
+  </Toolbar>
+</core:FragmentDefinition>

@@ -1,0 +1,622 @@
+[
+    {
+        "Fiscalyear": "FYnr",
+        "Companycode": "FPVF",
+        "Accountingdocumenttype": "qw",
+        "Documentdate": "2010-06-01",
+        "Accountingdocument": "mcLveMyITe",
+        "Glaccount": "EydhAUktSE",
+        "FileName": "FileName1",
+        "Glaccountname": "Glaccountname1",
+        "Numerador": 67514073,
+        "__EntityControl": {
+            "Deletable": true,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code20",
+                "message": "message20",
+                "target": "target20",
+                "additionalTargets": [
+                    "additionalTargets20"
+                ],
+                "transition": false,
+                "numericSeverity": 27,
+                "longtextUrl": "longtextUrl20"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "SWbC",
+        "Companycode": "qtBN",
+        "Accountingdocumenttype": "xA",
+        "Documentdate": "1971-07-06",
+        "Accountingdocument": "ujDSnUxdXq",
+        "Glaccount": "PiWrPMIoZa",
+        "FileName": "FileName2",
+        "Glaccountname": "Glaccountname2",
+        "Numerador": 1770798510,
+        "__EntityControl": {
+            "Deletable": true,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code13",
+                "message": "message13",
+                "target": "target13",
+                "additionalTargets": [
+                    "additionalTargets13"
+                ],
+                "transition": true,
+                "numericSeverity": 244,
+                "longtextUrl": "longtextUrl13"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "NsDq",
+        "Companycode": "jXzU",
+        "Accountingdocumenttype": "Mw",
+        "Documentdate": "1997-08-04",
+        "Accountingdocument": "xbgcmkHVQC",
+        "Glaccount": "VQGoBIZQow",
+        "FileName": "FileName3",
+        "Glaccountname": "Glaccountname3",
+        "Numerador": 641529785,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code3",
+                "message": "message3",
+                "target": "target3",
+                "additionalTargets": [
+                    "additionalTargets3"
+                ],
+                "transition": false,
+                "numericSeverity": 229,
+                "longtextUrl": "longtextUrl3"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "dajH",
+        "Companycode": "NCLv",
+        "Accountingdocumenttype": "zH",
+        "Documentdate": "2009-01-28",
+        "Accountingdocument": "BVLAigWXlW",
+        "Glaccount": "TgyMuqmqOQ",
+        "FileName": "FileName4",
+        "Glaccountname": "Glaccountname4",
+        "Numerador": 2035654331,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code3",
+                "message": "message3",
+                "target": "target3",
+                "additionalTargets": [
+                    "additionalTargets3"
+                ],
+                "transition": false,
+                "numericSeverity": 229,
+                "longtextUrl": "longtextUrl3"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "Tvar",
+        "Companycode": "BCwv",
+        "Accountingdocumenttype": "PD",
+        "Documentdate": "1982-12-19",
+        "Accountingdocument": "feFKJMwnRO",
+        "Glaccount": "oMJXfjNTLZ",
+        "FileName": "FileName5",
+        "Glaccountname": "Glaccountname5",
+        "Numerador": 2026167226,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code5",
+                "message": "message5",
+                "target": "target5",
+                "additionalTargets": [
+                    "additionalTargets5"
+                ],
+                "transition": true,
+                "numericSeverity": 188,
+                "longtextUrl": "longtextUrl5"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "cVKG",
+        "Companycode": "hBfH",
+        "Accountingdocumenttype": "HA",
+        "Documentdate": "1992-01-20",
+        "Accountingdocument": "lhyaCaKapL",
+        "Glaccount": "PDIBreIJCg",
+        "FileName": "FileName6",
+        "Glaccountname": "Glaccountname6",
+        "Numerador": 1894012555,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code14",
+                "message": "message14",
+                "target": "target14",
+                "additionalTargets": [
+                    "additionalTargets14"
+                ],
+                "transition": false,
+                "numericSeverity": 225,
+                "longtextUrl": "longtextUrl14"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "BqhA",
+        "Companycode": "nhzM",
+        "Accountingdocumenttype": "Rh",
+        "Documentdate": "1999-08-26",
+        "Accountingdocument": "PvzDSkXmdW",
+        "Glaccount": "uIKnsdDLjB",
+        "FileName": "FileName7",
+        "Glaccountname": "Glaccountname7",
+        "Numerador": 1717125319,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code13",
+                "message": "message13",
+                "target": "target13",
+                "additionalTargets": [
+                    "additionalTargets13"
+                ],
+                "transition": true,
+                "numericSeverity": 244,
+                "longtextUrl": "longtextUrl13"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "ClRt",
+        "Companycode": "Bhdr",
+        "Accountingdocumenttype": "Lb",
+        "Documentdate": "2005-02-23",
+        "Accountingdocument": "YIQvsEhsBo",
+        "Glaccount": "BGvaeTOWNX",
+        "FileName": "FileName8",
+        "Glaccountname": "Glaccountname8",
+        "Numerador": 1259598573,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code4",
+                "message": "message4",
+                "target": "target4",
+                "additionalTargets": [
+                    "additionalTargets4"
+                ],
+                "transition": true,
+                "numericSeverity": 217,
+                "longtextUrl": "longtextUrl4"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "RTSs",
+        "Companycode": "enZe",
+        "Accountingdocumenttype": "da",
+        "Documentdate": "1992-10-20",
+        "Accountingdocument": "uvVLDaPhCz",
+        "Glaccount": "nHGoflHBOF",
+        "FileName": "FileName9",
+        "Glaccountname": "Glaccountname9",
+        "Numerador": 616391019,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code8",
+                "message": "message8",
+                "target": "target8",
+                "additionalTargets": [
+                    "additionalTargets8"
+                ],
+                "transition": false,
+                "numericSeverity": 243,
+                "longtextUrl": "longtextUrl8"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "XVvH",
+        "Companycode": "WThk",
+        "Accountingdocumenttype": "rl",
+        "Documentdate": "2004-05-02",
+        "Accountingdocument": "JUrszHBKGj",
+        "Glaccount": "CkNGTglLuo",
+        "FileName": "FileName10",
+        "Glaccountname": "Glaccountname10",
+        "Numerador": 1180077848,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code13",
+                "message": "message13",
+                "target": "target13",
+                "additionalTargets": [
+                    "additionalTargets13"
+                ],
+                "transition": true,
+                "numericSeverity": 244,
+                "longtextUrl": "longtextUrl13"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "rTVs",
+        "Companycode": "tVNG",
+        "Accountingdocumenttype": "tK",
+        "Documentdate": "2003-11-16",
+        "Accountingdocument": "ogVVClItTp",
+        "Glaccount": "uMZoVPxDeb",
+        "FileName": "FileName11",
+        "Glaccountname": "Glaccountname11",
+        "Numerador": 768771203,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code5",
+                "message": "message5",
+                "target": "target5",
+                "additionalTargets": [
+                    "additionalTargets5"
+                ],
+                "transition": true,
+                "numericSeverity": 188,
+                "longtextUrl": "longtextUrl5"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "WMIN",
+        "Companycode": "XKXh",
+        "Accountingdocumenttype": "fc",
+        "Documentdate": "2009-03-26",
+        "Accountingdocument": "iGIqwDnWrt",
+        "Glaccount": "EOlykABsme",
+        "FileName": "FileName12",
+        "Glaccountname": "Glaccountname12",
+        "Numerador": 1774398420,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code10",
+                "message": "message10",
+                "target": "target10",
+                "additionalTargets": [
+                    "additionalTargets10"
+                ],
+                "transition": false,
+                "numericSeverity": 203,
+                "longtextUrl": "longtextUrl10"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "WPhC",
+        "Companycode": "pOme",
+        "Accountingdocumenttype": "uL",
+        "Documentdate": "2015-05-08",
+        "Accountingdocument": "xPcorhmWKW",
+        "Glaccount": "oMqqrBFUKR",
+        "FileName": "FileName13",
+        "Glaccountname": "Glaccountname13",
+        "Numerador": 1117264696,
+        "__EntityControl": {
+            "Deletable": true,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code14",
+                "message": "message14",
+                "target": "target14",
+                "additionalTargets": [
+                    "additionalTargets14"
+                ],
+                "transition": false,
+                "numericSeverity": 225,
+                "longtextUrl": "longtextUrl14"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "HNcR",
+        "Companycode": "MQze",
+        "Accountingdocumenttype": "kY",
+        "Documentdate": "1973-12-31",
+        "Accountingdocument": "fWtgETJrea",
+        "Glaccount": "HLHEPBnsYG",
+        "FileName": "FileName14",
+        "Glaccountname": "Glaccountname14",
+        "Numerador": 1366045274,
+        "__EntityControl": {
+            "Deletable": true,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code18",
+                "message": "message18",
+                "target": "target18",
+                "additionalTargets": [
+                    "additionalTargets18"
+                ],
+                "transition": false,
+                "numericSeverity": 164,
+                "longtextUrl": "longtextUrl18"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "Yheb",
+        "Companycode": "OCXE",
+        "Accountingdocumenttype": "QT",
+        "Documentdate": "2004-01-31",
+        "Accountingdocument": "EFTVXqvCYJ",
+        "Glaccount": "GxiFxSqnGD",
+        "FileName": "FileName15",
+        "Glaccountname": "Glaccountname15",
+        "Numerador": 1766408396,
+        "__EntityControl": {
+            "Deletable": true,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code8",
+                "message": "message8",
+                "target": "target8",
+                "additionalTargets": [
+                    "additionalTargets8"
+                ],
+                "transition": false,
+                "numericSeverity": 243,
+                "longtextUrl": "longtextUrl8"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "snrn",
+        "Companycode": "ooPE",
+        "Accountingdocumenttype": "qx",
+        "Documentdate": "1993-03-22",
+        "Accountingdocument": "UULVEGZmoD",
+        "Glaccount": "pcFMTrzCwE",
+        "FileName": "FileName16",
+        "Glaccountname": "Glaccountname16",
+        "Numerador": 2000125505,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code17",
+                "message": "message17",
+                "target": "target17",
+                "additionalTargets": [
+                    "additionalTargets17"
+                ],
+                "transition": true,
+                "numericSeverity": 18,
+                "longtextUrl": "longtextUrl17"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "gxBt",
+        "Companycode": "MsTt",
+        "Accountingdocumenttype": "ZA",
+        "Documentdate": "1987-06-25",
+        "Accountingdocument": "yRCRzoBkHV",
+        "Glaccount": "TyAaRVHxws",
+        "FileName": "FileName17",
+        "Glaccountname": "Glaccountname17",
+        "Numerador": 876417806,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code17",
+                "message": "message17",
+                "target": "target17",
+                "additionalTargets": [
+                    "additionalTargets17"
+                ],
+                "transition": true,
+                "numericSeverity": 18,
+                "longtextUrl": "longtextUrl17"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "Omse",
+        "Companycode": "Mecc",
+        "Accountingdocumenttype": "FD",
+        "Documentdate": "2010-02-23",
+        "Accountingdocument": "jQVcHpKGSG",
+        "Glaccount": "cKOLSBiAWl",
+        "FileName": "FileName18",
+        "Glaccountname": "Glaccountname18",
+        "Numerador": 1181268990,
+        "__EntityControl": {
+            "Deletable": false,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code8",
+                "message": "message8",
+                "target": "target8",
+                "additionalTargets": [
+                    "additionalTargets8"
+                ],
+                "transition": false,
+                "numericSeverity": 243,
+                "longtextUrl": "longtextUrl8"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "ChHC",
+        "Companycode": "LKwP",
+        "Accountingdocumenttype": "xs",
+        "Documentdate": "1993-07-10",
+        "Accountingdocument": "eUMGyWXEDq",
+        "Glaccount": "lJTZvtwIJf",
+        "FileName": "FileName19",
+        "Glaccountname": "Glaccountname19",
+        "Numerador": 1759980936,
+        "__EntityControl": {
+            "Deletable": true,
+            "Updatable": false
+        },
+        "__OperationControl": {
+            "numerarAsientos": true
+        },
+        "SAP__Messages": [
+            {
+                "code": "code12",
+                "message": "message12",
+                "target": "target12",
+                "additionalTargets": [
+                    "additionalTargets12"
+                ],
+                "transition": false,
+                "numericSeverity": 56,
+                "longtextUrl": "longtextUrl12"
+            }
+        ]
+    },
+    {
+        "Fiscalyear": "nBPy",
+        "Companycode": "nKtB",
+        "Accountingdocumenttype": "QO",
+        "Documentdate": "2014-12-01",
+        "Accountingdocument": "MVhJxKTymo",
+        "Glaccount": "Ibqlksjqpf",
+        "FileName": "FileName20",
+        "Glaccountname": "Glaccountname20",
+        "Numerador": 1519338039,
+        "__EntityControl": {
+            "Deletable": true,
+            "Updatable": true
+        },
+        "__OperationControl": {
+            "numerarAsientos": false
+        },
+        "SAP__Messages": [
+            {
+                "code": "code9",
+                "message": "message9",
+                "target": "target9",
+                "additionalTargets": [
+                    "additionalTargets9"
+                ],
+                "transition": true,
+                "numericSeverity": 243,
+                "longtextUrl": "longtextUrl9"
+            }
+        ]
+    }
+]
