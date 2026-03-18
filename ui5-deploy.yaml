@@ -2,7 +2,7 @@
 
 specVersion: "3.1"
 metadata:
-  name: info.casatua.librodiarioreporte
+  name: info.agrobay.librodiarioreporte
 type: application
 resources:
   configuration:
@@ -16,7 +16,7 @@ builder:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
-        archiveName: infocasatualibrodiarioreporte
+        archiveName: infoagrobaylibrodiarioreporte
         relativePaths: true
         additionalFiles:
           - xs-app.json

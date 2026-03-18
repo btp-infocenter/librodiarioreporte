@@ -861,7 +861,7 @@ sap.ui.define([
             oBusyDialog.open();
             try {
                 // Obtener tabla y su binding existente - más eficiente
-                const oTable = sap.ui.getCore().byId("info.casatua.librodiarioreporte::LibroDiarioNumeradoList--fe::table::LibroDiarioNumerado::LineItem-innerTable");
+                const oTable = sap.ui.getCore().byId("info.agrobay.librodiarioreporte::LibroDiarioNumeradoList--fe::table::LibroDiarioNumerado::LineItem-innerTable");
                 const oBinding = oTable?.getBinding("rows");
 
                 if (!oBinding || oBinding.getLength() === 0) {

@@ -2,7 +2,7 @@
 
 specVersion: "3.1"
 metadata:
-  name: info.casatua.librodiarioreporte
+  name: info.agrobay.librodiarioreporte
 type: application
 server:
   customMiddleware:
@@ -19,7 +19,7 @@ server:
           - authenticationType: reentranceTicket # SAML support for vscode
             path: /sap
             url: https://my418296.s4hana.cloud.sap
-            destination: CASATUA_NSP100_CUSTO
+            destination: agrobay_NSP100_CUSTO
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

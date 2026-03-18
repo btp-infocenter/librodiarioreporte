@@ -1,7 +1,7 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "info.casatua.librodiarioreporte",
+    "id": "info.agrobay.librodiarioreporte",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -68,7 +68,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.130.11",
+      "minUI5Version": "1.136.5",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
@@ -83,7 +83,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "info.casatua.librodiarioreporte.i18n.i18n"
+          "bundleName": "info.agrobay.librodiarioreporte.i18n.i18n"
         }
       },
       "": {
@@ -137,14 +137,14 @@
                   },
                   "actions": {
                     "imprimirPDF": {
-                      "press": "info.casatua.librodiarioreporte.ext.controller.imprimirPDF.imprimirPDF",
+                      "press": "info.agrobay.librodiarioreporte.ext.controller.imprimirPDF.imprimirPDF",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": false,
                       "text": "Imprimir PDF"
                     },
                     "grabarLibroDiario": {
-                      "press": "info.casatua.librodiarioreporte.ext.controller.grabarLibroDiario.grabarLibroDiario",
+                      "press": "info.agrobay.librodiarioreporte.ext.controller.grabarLibroDiario.grabarLibroDiario",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": false,
@@ -385,7 +385,7 @@
     },
     "controllerExtensions": {
       "sap.fe.templates.ListReport.ListReportController": {
-        "controllerName": "info.casatua.librodiarioreporte.ext.controller.ListController"
+        "controllerName": "info.agrobay.librodiarioreporte.ext.controller.ListController"
       }
     }
   },
@@ -395,6 +395,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "infocasatualibrodiarioreporte"
+    "service": "infoagrobaylibrodiarioreporte"
   }
 }

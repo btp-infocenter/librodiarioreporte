@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (ControllerExtension) {
   "use strict";
 
-  return ControllerExtension.extend("info.casatua.librodiarioreporte.ext.controller.ListController", {
+  return ControllerExtension.extend("info.agrobay.librodiarioreporte.ext.controller.ListController", {
     override: {
       onInitPageExtension: function () {
         // Esto debería aparecer en la consola
