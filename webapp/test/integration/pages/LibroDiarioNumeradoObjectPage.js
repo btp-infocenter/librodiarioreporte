@@ -8,7 +8,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 
     return new ObjectPage(
         {
-            appId: 'info.agrobay.librodiarioreporte',
+            appId: 'info.infocenter.librodiarioreporte',
             componentId: 'LibroDiarioNumeradoObjectPage',
             contextPath: '/LibroDiarioNumerado'
         },

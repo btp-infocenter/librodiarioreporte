@@ -7,10 +7,10 @@
 |**Generation Platform**<br>SAP Business Application Studio|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>SAP System (ABAP On Premise)|
-|**Service URL**<br>https://my418296.s4hana.cloud.sap/sap/opu/odata4/sap/zsb_ld6_numerado_ui4/srvd/sap/zsd_ld6_numerados/0001/|
+|**Service URL**<br>https://my418296.s4hana.cloud.sap/sap/opu/odata4/sap/zsb_ld6_numerados/srvd/sap/zsd_ld6_numerados/0001/|
 |**Module Name**<br>librodiarioreporte|
 |**Application Title**<br>Reporte Libro Diario|
-|**Namespace**<br>info.agrobay|
+|**Namespace**<br>info.infocenter|
 |**UI5 Theme**<br>sap_horizon|
 |**UI5 Version**<br>1.136.5|
 |**Enable Code Assist Libraries**<br>False|

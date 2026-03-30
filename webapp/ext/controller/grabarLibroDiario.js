@@ -229,7 +229,7 @@ sap.ui.define([
 
         onCrearGrabarNumeradorMasivos: async function () {
             const oButton = sap.ui.getCore().byId(
-                "info.agrobay.librodiarioreporte::LibroDiarioNumeradoList--fe::table::LibroDiarioNumerado::LineItem::CustomAction::grabarLibroDiario"
+                "info.infocenter.librodiarioreporte::LibroDiarioNumeradoList--fe::table::LibroDiarioNumerado::LineItem::CustomAction::grabarLibroDiario"
             );
             if (!oButton) throw new Error("No se encontró el botón CustomAction.");
 
@@ -244,7 +244,7 @@ sap.ui.define([
 
             try {
                 // A) Validar que haya datos en la tabla
-                const oTable = sap.ui.getCore().byId("info.agrobay.librodiarioreporte::LibroDiarioNumeradoList--fe::table::LibroDiarioNumerado::LineItem-innerTable");
+                const oTable = sap.ui.getCore().byId("info.infocenter.librodiarioreporte::LibroDiarioNumeradoList--fe::table::LibroDiarioNumerado::LineItem-innerTable");
                 const oBinding = oTable?.getBinding("rows");
 
                 if (!oBinding || oBinding.getLength() === 0) {

@@ -5,7 +5,7 @@
   xmlns:UI="com.sap.vocabularies.UI.v1"
   xmlns:SAP__capabilities="Org.OData.Capabilities.V1"
   xmlns:Common="com.sap.vocabularies.Common.v1">
-    <edmx:Reference Uri="/sap/opu/odata4/sap/zsb_ld6_numerado_ui4/srvd/sap/zsd_ld6_numerados/0001/$metadata">
+    <edmx:Reference Uri="/sap/opu/odata4/sap/zsb_ld6_numerados/srvd/sap/zsd_ld6_numerados/0001/$metadata">
         <edmx:Include Namespace="com.sap.gateway.srvd.zsd_ld6_numerados.v0001"/>
     </edmx:Reference>
 

@@ -1,7 +1,7 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "info.agrobay.librodiarioreporte",
+    "id": "info.infocenter.librodiarioreporte",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -24,7 +24,7 @@
         }
       },
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/zsb_ld6_numerado_ui4/srvd/sap/zsd_ld6_numerados/0001/",
+        "uri": "/sap/opu/odata4/sap/zsb_ld6_numerados/srvd/sap/zsd_ld6_numerados/0001/",
         "type": "OData",
         "settings": {
           "annotations": [
@@ -83,7 +83,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "info.agrobay.librodiarioreporte.i18n.i18n"
+          "bundleName": "info.infocenter.librodiarioreporte.i18n.i18n"
         }
       },
       "": {
@@ -137,14 +137,14 @@
                   },
                   "actions": {
                     "imprimirPDF": {
-                      "press": "info.agrobay.librodiarioreporte.ext.controller.imprimirPDF.imprimirPDF",
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.imprimirPDF.imprimirPDF",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": false,
                       "text": "Imprimir PDF"
                     },
                     "grabarLibroDiario": {
-                      "press": "info.agrobay.librodiarioreporte.ext.controller.grabarLibroDiario.grabarLibroDiario",
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.grabarLibroDiario.grabarLibroDiario",
                       "visible": true,
                       "enabled": true,
                       "requiresSelection": false,
@@ -385,7 +385,7 @@
     },
     "controllerExtensions": {
       "sap.fe.templates.ListReport.ListReportController": {
-        "controllerName": "info.agrobay.librodiarioreporte.ext.controller.ListController"
+        "controllerName": "info.infocenter.librodiarioreporte.ext.controller.ListController"
       }
     }
   },
@@ -395,6 +395,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "infoagrobaylibrodiarioreporte"
+    "service": "infoinfocenterlibrodiarioreporte"
   }
 }

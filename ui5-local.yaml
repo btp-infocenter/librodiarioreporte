@@ -2,7 +2,7 @@
 
 specVersion: "3.1"
 metadata:
-  name: info.agrobay.librodiarioreporte
+  name: info.infocenter.librodiarioreporte
 type: application
 framework:
   name: SAPUI5
@@ -34,13 +34,13 @@ server:
           - authenticationType: reentranceTicket # SAML support for vscode
             path: /sap
             url: https://my418296.s4hana.cloud.sap
-            destination: agrobay_NSP100_CUSTO
+            destination: infocenter_NSP100_CUSTO
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mountPath: /
         services:
-          - urlPath: /sap/opu/odata4/sap/zsb_ld6_numerado_ui4/srvd/sap/zsd_ld6_numerados/0001
+          - urlPath: /sap/opu/odata4/sap/zsb_ld6_numerados/srvd/sap/zsd_ld6_numerados/0001
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
