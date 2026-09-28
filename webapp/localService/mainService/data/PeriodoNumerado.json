@@ -1,0 +1,58 @@
+[
+  {
+    "Companycode": "1000",
+    "Fiscalyear": "2025",
+    "Periodo": "01",
+    "CantidadAsientos": 120,
+    "CantidadRegistros": 480,
+    "NumeradorDesde": 1,
+    "NumeradorHasta": 120,
+    "FechaGeneracion": "2025-02-03T10:15:00Z",
+    "UltimoPeriodo": "03",
+    "EsAnulable": "",
+    "Estado": "Bloqueado",
+    "CriticidadEstado": 0
+  },
+  {
+    "Companycode": "1000",
+    "Fiscalyear": "2025",
+    "Periodo": "02",
+    "CantidadAsientos": 95,
+    "CantidadRegistros": 380,
+    "NumeradorDesde": 121,
+    "NumeradorHasta": 215,
+    "FechaGeneracion": "2025-03-04T09:30:00Z",
+    "UltimoPeriodo": "03",
+    "EsAnulable": "",
+    "Estado": "Bloqueado",
+    "CriticidadEstado": 0
+  },
+  {
+    "Companycode": "1000",
+    "Fiscalyear": "2025",
+    "Periodo": "03",
+    "CantidadAsientos": 110,
+    "CantidadRegistros": 440,
+    "NumeradorDesde": 216,
+    "NumeradorHasta": 325,
+    "FechaGeneracion": "2025-04-02T11:45:00Z",
+    "UltimoPeriodo": "03",
+    "EsAnulable": "X",
+    "Estado": "Anulable",
+    "CriticidadEstado": 3
+  },
+  {
+    "Companycode": "2000",
+    "Fiscalyear": "2025",
+    "Periodo": "01",
+    "CantidadAsientos": 60,
+    "CantidadRegistros": 240,
+    "NumeradorDesde": 1,
+    "NumeradorHasta": 60,
+    "FechaGeneracion": "2025-02-05T08:00:00Z",
+    "UltimoPeriodo": "01",
+    "EsAnulable": "X",
+    "Estado": "Anulable",
+    "CriticidadEstado": 3
+  }
+]

@@ -15,6 +15,15 @@ sap.ui.define([
             });
 
 
+            opaTest("Navigate to Gestión de Numeración", function (Given, When, Then) {
+                // El botón custom del reporte principal navega a la ruta nueva
+                When.onTheLibroDiarioNumeradoList.onTable().iExecuteAction("gestionNumeracion");
+                Then.onThePeriodoNumeradoList.iSeeThisPage();
+
+                When.onTheShell.iNavigateBack();
+                Then.onTheLibroDiarioNumeradoList.iSeeThisPage();
+            });
+
             opaTest("Navigate to ObjectPage", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
                 

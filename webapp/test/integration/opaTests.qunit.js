@@ -3,9 +3,10 @@ sap.ui.require(
         'sap/fe/test/JourneyRunner',
         'info/infocenter/librodiarioreporte/test/integration/FirstJourney',
 		'info/infocenter/librodiarioreporte/test/integration/pages/LibroDiarioNumeradoList',
-		'info/infocenter/librodiarioreporte/test/integration/pages/LibroDiarioNumeradoObjectPage'
+		'info/infocenter/librodiarioreporte/test/integration/pages/LibroDiarioNumeradoObjectPage',
+		'info/infocenter/librodiarioreporte/test/integration/pages/PeriodoNumeradoList'
     ],
-    function(JourneyRunner, opaJourney, LibroDiarioNumeradoList, LibroDiarioNumeradoObjectPage) {
+    function(JourneyRunner, opaJourney, LibroDiarioNumeradoList, LibroDiarioNumeradoObjectPage, PeriodoNumeradoList) {
         'use strict';
         var JourneyRunner = new JourneyRunner({
             // start index.html in web folder
@@ -15,9 +16,10 @@ sap.ui.require(
        
         JourneyRunner.run(
             {
-                pages: { 
+                pages: {
 					onTheLibroDiarioNumeradoList: LibroDiarioNumeradoList,
-					onTheLibroDiarioNumeradoObjectPage: LibroDiarioNumeradoObjectPage
+					onTheLibroDiarioNumeradoObjectPage: LibroDiarioNumeradoObjectPage,
+					onThePeriodoNumeradoList: PeriodoNumeradoList
                 }
             },
             opaJourney.run

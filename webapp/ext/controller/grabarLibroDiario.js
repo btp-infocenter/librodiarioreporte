@@ -177,54 +177,138 @@ sap.ui.define([
                     actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                     emphasizedAction: MessageBox.Action.OK,
                     onClose: async function (sAction) {
-                        if (sAction === MessageBox.Action.OK) {
-                            // Ejecuta la función del controlador
-                            await grabarLibroHelper.grabarLibroDiarioAdjunto()
-                            console.log("ya termino")
-                            grabarLibroHelper.onCrearGrabarNumeradorMasivos();
+                        if (sAction !== MessageBox.Action.OK) {
+                            return;
+                        }
+                        try {
+                            // Si la cabecera del adjunto no queda grabada no tiene
+                            // sentido numerar: los asientos apuntarían a un PDF inexistente.
+                            const bAdjuntoOk = await grabarLibroHelper.grabarLibroDiarioAdjunto();
+                            if (!bAdjuntoOk) {
+                                return;
+                            }
+                            await grabarLibroHelper.onCrearGrabarNumeradorMasivos();
+                        } catch (e) {
+                            MessageBox.error(grabarLibroHelper._errorText(e));
                         }
                     }
                 }
             );
         },
 
+        // Grupo de batch propio para el adjunto. Si lo comparte con la grabación
+        // masiva, un POST fallido acá queda pendiente y el modelo lo reintenta
+        // dentro del batch del otro flujo, bloqueándolo.
+        _ATT_GROUP: "attHeader",
+
+        // Devuelve true si la cabecera quedó grabada (creada o actualizada).
         grabarLibroDiarioAdjunto: async function () {
+            const oAttHeaderModel = this._controller.getOwnerComponent().getModel("oAttHeaderModel");
+            const oAttData = (oAttHeaderModel && oAttHeaderModel.getData) ? oAttHeaderModel.getData() : {};
+            const oModel = this._controller.getOwnerComponent().getModel();
+            const sGroup = this._ATT_GROUP;
+
+            this._bulkFileName = oAttData.filename;
+
+            const oPayload = {
+                Fiscalyear: oAttData.fiscalYear,
+                Companycode: oAttData.companyCode,
+                DateFrom: oAttData.dateLow,
+                DateTo: oAttData.dateHigh,
+                Comments: oAttData.comments,
+                zmoneda: oAttData.zmoneda,
+                total_periodo: Number(oAttData.total_periodo || 0).toFixed(2),
+                Mimetype: oAttData.mimetype,
+                Filename: oAttData.filename
+            };
+
             try {
-                // 1) Obtener datos del modelo oAttHeaderModel
-                var oAttHeaderModel = this._controller.getOwnerComponent().getModel("oAttHeaderModel");
-                var oAttData = oAttHeaderModel && oAttHeaderModel.getData ? oAttHeaderModel.getData() : {};
+                // Empezar limpio, sin reventar si quedó un batch en vuelo.
+                this._safeResetChanges(oModel, sGroup);
 
-                this._bulkFileName = oAttData.filename;
+                // Pre-chequeo por clave (Fiscalyear, Companycode, DateFrom, DateTo).
+                // Sin esto, re-grabar el mismo período devuelve 400 "The key value
+                // is already in use" y el create fallido se reintenta solo.
+                const oExisting = await this._readAttHeader(oModel, oPayload, sGroup);
 
-                // 2) Obtener el modelo OData V4 (default)
-                var oModel = this._controller.getOwnerComponent().getModel();
+                if (oExisting) {
+                    await this._actualizarAttHeader(oModel, oExisting, oPayload, sGroup);
+                    return true;
+                }
 
-                // 2 - 1) Empezar “limpio” por click:
-                oModel.resetChanges("submitBatch")
-                // 3) Crear la entidad en LibroDiarioAttHeader
-                const list = oModel.bindList("/LibroDiarioAttHeader", null, null, null, { $$updateGroupId: "submitBatch" });
-
-                const ctx = list.create({
-                    Fiscalyear: oAttData.fiscalYear,
-                    Companycode: oAttData.companyCode,
-                    DateFrom: oAttData.dateLow,
-                    DateTo: oAttData.dateHigh,
-                    Comments: oAttData.comments,
-                    zmoneda: oAttData.zmoneda,
-                    total_periodo: oAttData.total_periodo.toFixed(2),
-                    Mimetype: oAttData.mimetype,
-                    Filename: oAttData.filename
+                const oList = oModel.bindList("/LibroDiarioAttHeader", null, null, null, {
+                    $$updateGroupId: sGroup
                 });
+                const oCtx = oList.create(oPayload);
 
-                // 1) Enviar el POST del create en el $batch del grupo
-                await oModel.submitBatch("submitBatch");
+                // created() se engancha antes del submit para no dejar un rechazo
+                // sin manejar si el POST falla.
+                const pCreated = oCtx.created();
+                pCreated.catch(function () { /* se maneja en el catch de abajo */ });
 
-                await ctx.created(); // evita “The binding must be deferred”
+                await oModel.submitBatch(sGroup);
+                await pCreated;
+                return true;
 
             } catch (e) {
-                MessageBox.error("Error al grabar el adjunto: " + (e && e.message ? e.message : e));
+                // Un create fallido queda transitorio y el modelo lo repite en cada
+                // submitBatch del grupo. Hay que descartarlo o contamina todo lo que siga.
+                this._safeResetChanges(oModel, sGroup);
+                MessageBox.error("Error al grabar el adjunto: " + this._errorText(e));
+                return false;
+            }
+        },
+
+        // Lee la cabecera por su clave completa. Devuelve el Context o null.
+        _readAttHeader: async function (oModel, oKey, sGroup) {
+            const Filter = sap.ui.model.Filter;
+            const EQ = sap.ui.model.FilterOperator.EQ;
+
+            const aFilters = [new Filter([
+                new Filter("Fiscalyear", EQ, oKey.Fiscalyear),
+                new Filter("Companycode", EQ, oKey.Companycode),
+                new Filter("DateFrom", EQ, oKey.DateFrom),
+                new Filter("DateTo", EQ, oKey.DateTo)
+            ], true)];
+
+            const oList = oModel.bindList("/LibroDiarioAttHeader", null, null, aFilters, {
+                $$updateGroupId: sGroup,
+                $select: "Fiscalyear,Companycode,DateFrom,DateTo"
+            });
+
+            const aCtx = await oList.requestContexts(0, 1);
+            return aCtx.length ? aCtx[0] : null;
+        },
+
+        // La cabecera del período ya existía: PATCH de los campos no clave.
+        _actualizarAttHeader: async function (oModel, oCtx, oPayload, sGroup) {
+            const aKeyProps = ["Fiscalyear", "Companycode", "DateFrom", "DateTo"];
+
+            const aPromises = Object.keys(oPayload)
+                .filter(k => aKeyProps.indexOf(k) === -1 && oPayload[k] !== undefined)
+                .map(k => oCtx.setProperty(k, oPayload[k], sGroup));
+
+            if (!aPromises.length) {
                 return;
             }
+            await oModel.submitBatch(sGroup);
+            await Promise.all(aPromises);
+        },
+
+        // resetChanges lanza excepción si el batch del grupo está en vuelo.
+        _safeResetChanges: function (oModel, sGroup) {
+            try {
+                if (oModel.hasPendingChanges(sGroup)) {
+                    oModel.resetChanges(sGroup);
+                }
+            } catch (e) {
+                console.warn("No se pudieron descartar los cambios pendientes del grupo '" + sGroup + "':", e);
+            }
+        },
+
+        _errorText: function (e) {
+            if (!e) { return "Error desconocido."; }
+            return e.message ? e.message : String(e);
         },
 
         onCrearGrabarNumeradorMasivos: async function () {
@@ -235,7 +319,8 @@ sap.ui.define([
 
             const oComponent = sap.ui.core.Component.getOwnerComponentFor(oButton);
             const oModel = oComponent.getModel();
-            const sGroup = "submitBatch"; // tu grupo diferido de escrituras
+            const sGroup = "submitBatch";        // grupo diferido para los POST
+            const sReactGroup = "reactivarNum";  // grupo diferido para los PATCH de reactivacion
             const oBusy = this._busyDialog || new sap.m.BusyDialog({
                 title: "Procesando...",
                 text: "Grabando numeradores, por favor espere."
@@ -262,52 +347,126 @@ sap.ui.define([
                 }
 
                 // C) Pre-chequeo: leer claves ya existentes con los mismos filtros
+                //    (separando vigentes de anuladas: las anuladas se reactivan)
                 const aFiltersExisting = this._buildFiltersForExisting();
-                const existingKeySet = await this._readExistingKeys(oModel, aFiltersExisting);
+                const oExisting = await this._readExistingKeys(oModel, aFiltersExisting);
 
-                // D) Mapear payloads y dividir en nuevos vs ya-existentes (skip)
+                // D) Mapear payloads y dividir en nuevos / ya-existentes (skip) /
+                //    anulados (reactivar vía PATCH de Numerador)
                 const aPayloads = aRows.map(this._mapToGrabarPayload.bind(this));
                 const aToCreate = [];
                 const aSkippedExists = [];
+                const aToReactivate = [];
+                // La tabla puede traer varios items con la misma clave (mismo
+                // documento + misma cuenta). Dos POST con clave identica dentro
+                // del mismo changeset revientan el $batch en el backend (500),
+                // asi que hay que quedarse con uno solo.
+                const seenCreate = new Set();
+                let iDupCreate = 0;
 
                 for (const p of aPayloads) {
                     const keyStr = this._keyString(p);
-                    if (existingKeySet.has(keyStr)) {
+                    if (oExisting.anuladas.has(keyStr)) {
+                        aToReactivate.push({ payload: p, ctxs: oExisting.anuladas.get(keyStr), keyStr: keyStr });
+                    } else if (oExisting.vigentes.has(keyStr)) {
                         aSkippedExists.push(p);
+                    } else if (seenCreate.has(keyStr)) {
+                        iDupCreate++;
                     } else {
+                        seenCreate.add(keyStr);
                         aToCreate.push(p);
                     }
                 }
 
-                if (!aToCreate.length) {
+                if (!aToCreate.length && !aToReactivate.length) {
                     sap.m.MessageToast.show(`Nada para grabar. ${aSkippedExists.length} ya existían.`);
                     return;
                 }
 
-                // 2 - 1) Empezar “limpio” por click:
-                oModel.resetChanges("submitBatch")
+                // 2 - 1) Empezar “limpio” por click: si quedó algo pendiente de un
+                // intento anterior, el modelo lo reenvía solo y vuelve a fallar.
+                this._safeResetChanges(oModel, sGroup);
+                this._safeResetChanges(oModel, sReactGroup);
 
-                // E) Bind a la colección destino
-                const oList = oModel.bindList("/GrabarNumeradorAsiento", undefined, undefined, undefined, { $$groupId: sGroup });
-
-                // F) Crear contextos
-                const aCtx = aToCreate.map(p => oList.create(p));
-
-                // G) Enviar batch
-                await oModel.submitBatch(sGroup);
-
-                // H) Confirmar cada create y capturar errores (409, etc.)
+                // E/F/G) Crear en lotes. Un changeset con cientos de POST hace que
+                // un solo registro malo tumbe el $batch entero (500) y deja todos
+                // los POST pendientes, que el modelo reintenta indefinidamente.
                 const ok = [];
                 const failed = [];
-                await Promise.all(aCtx.map(async (ctx, idx) => {
+                const CHUNK = 100;
+
+                for (let i = 0; i < aToCreate.length; i += CHUNK) {
+                    const aChunk = aToCreate.slice(i, i + CHUNK);
+
+                    // $$updateGroupId (no $$groupId): $$groupId solo afecta lecturas,
+                    // con lo cual los create se iban a "$auto" y se enviaban antes
+                    // del submitBatch, fuera de todo control.
+                    const oList = oModel.bindList("/GrabarNumeradorAsiento", undefined, undefined, undefined, {
+                        $$updateGroupId: sGroup
+                    });
+
+                    const aCtx = aChunk.map(p => oList.create(p));
+                    // Enganchar created() antes del submit para no dejar rechazos sin manejar.
+                    const aCreated = aCtx.map(ctx => {
+                        const pCreated = ctx.created();
+                        pCreated.catch(function () { /* se evalúa con allSettled */ });
+                        return pCreated;
+                    });
+
+                    let oBatchError = null;
                     try {
-                        await ctx.created();
-                        ok.push(aToCreate[idx]);
+                        await oModel.submitBatch(sGroup);
                     } catch (e) {
-                        // Duplicado / conflicto → lo contamos como no grabado
-                        failed.push({ payload: aToCreate[idx], error: e });
+                        oBatchError = e;
+                        console.error("Falló el $batch del lote " + (i / CHUNK + 1) + ":", e);
                     }
-                }));
+
+                    // Lo que sigue pendiente es lo que falló. Hay que descartarlo
+                    // antes de esperar las promesas: un POST fallido queda "para
+                    // reintentar" y created() nunca se resuelve hasta el reset.
+                    this._safeResetChanges(oModel, sGroup);
+
+                    const aSettled = await Promise.allSettled(aCreated);
+                    aSettled.forEach((s, idx) => {
+                        if (s.status === "fulfilled") {
+                            ok.push(aChunk[idx]);
+                        } else {
+                            failed.push({ payload: aChunk[idx], error: s.reason || oBatchError });
+                        }
+                    });
+                }
+
+                // F-2) Reactivar filas anuladas: el PATCH de Numerador dispara la
+                // determinación ReactivarAlNumerar en el backend (anulado = '')
+                const seenReactivate = new Set();
+                const aReactPromises = [];
+                for (const r of aToReactivate) {
+                    if (seenReactivate.has(r.keyStr)) continue;
+                    seenReactivate.add(r.keyStr);
+                    for (const ctx of r.ctxs) {
+                        aReactPromises.push(ctx.setProperty("Numerador", r.payload.Numerador, sReactGroup));
+                        aReactPromises.push(ctx.setProperty("Glaccountname", r.payload.Glaccountname || "", sReactGroup));
+                    }
+                }
+
+                // G-2) Enviar y confirmar reactivaciones en su propio grupo, para que
+                // un error acá no arrastre a los create ni al revés.
+                const reactivated = seenReactivate.size;
+                let reactivateErrors = 0;
+                if (aReactPromises.length) {
+                    try {
+                        await oModel.submitBatch(sReactGroup);
+                    } catch (e) {
+                        console.error("Falló el $batch de reactivaciones:", e);
+                    }
+                    this._safeResetChanges(oModel, sReactGroup);
+
+                    const aSettled = await Promise.allSettled(aReactPromises);
+                    reactivateErrors = aSettled.filter(s => s.status === "rejected").length;
+                    if (reactivateErrors) {
+                        console.warn("Reactivaciones fallidas:", aSettled.filter(s => s.status === "rejected").slice(0, 10));
+                    }
+                }
 
                 // I) Resumen
                 const total = aRows.length;
@@ -318,7 +477,10 @@ sap.ui.define([
                 const msg =
                     `Procesadas ${total} filas.\n` +
                     `Creadas: ${created}\n` +
+                    `Reactivadas (estaban anuladas): ${reactivated}` +
+                    (reactivateErrors ? ` (${reactivateErrors} errores)` : ``) + `\n` +
                     `Omitidas (ya existían): ${skipped}\n` +
+                    (iDupCreate ? `Omitidas (clave repetida en la tabla): ${iDupCreate}\n` : ``) +
                     `Fallidas: ${errors}`;
 
                 // Si querés listar algunas fallidas:
@@ -327,12 +489,20 @@ sap.ui.define([
                     // Podrías enrutar al MessageManager también
                 }
 
-                sap.m.MessageBox.information(msg);
+                if (errors) {
+                    sap.m.MessageBox.warning(msg + "\n\n" + this._errorText(failed[0].error));
+                } else {
+                    sap.m.MessageBox.information(msg);
+                }
 
             } catch (e) {
                 console.error("Error en grabación masiva:", e);
                 sap.m.MessageBox.error(e?.message || "Error en grabación masiva.");
             } finally {
+                // Nada debe quedar pendiente: el modelo reenvía los cambios fallidos
+                // en cualquier $batch posterior y vuelve a romper todo.
+                this._safeResetChanges(oModel, sGroup);
+                this._safeResetChanges(oModel, sReactGroup);
                 oBusy.close();
             }
         },
@@ -390,26 +560,45 @@ sap.ui.define([
 
         //Chequear keys
         _readExistingKeys: async function (oModel, aFilters) {
-            // Solo select de las keys para minimizar payload
+            // Solo select de las keys (+ Anulado) para minimizar payload.
+            // Devuelve { vigentes: Set<keyStr>, anuladas: Map<keyStr, Context> }:
+            // las vigentes se saltean al grabar, las anuladas se reactivan.
             const oList = oModel.bindList("/GrabarNumeradorAsiento", undefined, undefined, aFilters, {
-                $select: "Fiscalyear,Companycode,Accountingdocumenttype,Documentdate,Accountingdocument,Glaccount"
+                $select: "Fiscalyear,Companycode,Accountingdocumenttype,Documentdate,Accountingdocument,Accountingdocumentitem,Glaccount,Anulado"
             });
 
             const PAGE = 400;
             let i = 0;
-            const keySet = new Set();
+            const vigentes = new Set();
+            const anuladas = new Map();
 
             while (true) {
                 const aCtx = await oList.requestContexts(i, PAGE);
                 if (!aCtx.length) break;
                 for (const c of aCtx) {
                     const o = c.getObject();
-                    keySet.add(this._keyString(o)); // misma serialización que usarás para payloads
+                    const keyStr = this._keyString(o); // misma serialización que usarás para payloads
+                    if (o.Anulado) {
+                        // Puede haber varias filas (ítems) por clave doc+cuenta:
+                        // hay que reactivarlas todas
+                        if (!anuladas.has(keyStr)) {
+                            anuladas.set(keyStr, []);
+                        }
+                        anuladas.get(keyStr).push(c);
+                    } else {
+                        vigentes.add(keyStr);
+                    }
                 }
                 i += aCtx.length;
                 if (aCtx.length < PAGE) break;
             }
-            return keySet;
+            return { vigentes: vigentes, anuladas: anuladas };
+        },
+
+        // El backend es numc(3): la tabla de lectura trae "1" pero el servicio
+        // devuelve "001". Sin normalizar, el pre-chequeo de existentes nunca matchea.
+        _padItem: function (v) {
+            return String(v ?? "").padStart(3, "0");
         },
 
         // Serializador consistente de la “composite key”
@@ -421,6 +610,7 @@ sap.ui.define([
                 `Accountingdocumenttype='${o.Accountingdocumenttype || o.AccountingDocumentType}'`,
                 `Documentdate=${(o.Documentdate || o.DocumentDate)}`,
                 `Accountingdocument='${o.Accountingdocument || o.AccountingDocument}'`,
+                `Accountingdocumentitem='${this._padItem(o.Accountingdocumentitem || o.AccountingDocumentItem)}'`,
                 `Glaccount='${o.Glaccount || o.GLAccount}'`
             ].join(",");
         },
@@ -436,6 +626,9 @@ sap.ui.define([
                 Accountingdocumenttype: oRow.AccountingDocumentType,
                 Documentdate: oRow.DocumentDate,        // "YYYY-MM-DD"
                 Accountingdocument: oRow.AccountingDocument,
+                // Es clave en ZTB_LIB_DIA_NUM: sin esto todos los items del
+                // mismo documento+cuenta colisionan en '000'.
+                Accountingdocumentitem: this._padItem(oRow.AccountingDocumentItem),
                 Glaccount: oRow.GLAccount,
                 Glaccountname: oRow.GLAccountName || "", // requerido en el servicio
                 FileName: this._bulkFileName || "bulk-numerador.json", // requerido

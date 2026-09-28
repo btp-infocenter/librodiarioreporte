@@ -1,0 +1,440 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "info.infocenter.librodiarioreporte",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.18.2",
+      "toolsId": "ab3cfc61-1887-487b-90c8-d2ba3243026b"
+    },
+    "dataSources": {
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zsb_ld6_numerados/srvd/sap/zsd_ld6_numerados/0001/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "rep_lib_diario-display": {
+          "semanticObject": "rep_lib_diario",
+          "action": "display",
+          "title": "{{rep_lib_diario-display.flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.136.5",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "info.infocenter.librodiarioreporte.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": [],
+      "js": [
+        {
+          "uri": "thirdparty/pdfmake.min.js"
+        },
+        {
+          "uri": "thirdparty/vfs_fonts.js"
+        }
+      ]
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "LibroDiarioNumeradoList",
+          "target": "LibroDiarioNumeradoList"
+        },
+        {
+          "pattern": "PeriodoNumerado:?query:",
+          "name": "GestionNumeracionList",
+          "target": "GestionNumeracionList"
+        }
+      ],
+      "targets": {
+        "LibroDiarioNumeradoList": {
+          "type": "Component",
+          "id": "LibroDiarioNumeradoList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/LibroDiarioNumerado",
+              "variantManagement": "Page",
+              "navigation": {},
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "GridTable"
+                  },
+                  "actions": {
+                    "imprimirPDF": {
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.imprimirPDF.imprimirPDF",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "Imprimir PDF"
+                    },
+                    "grabarLibroDiario": {
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.grabarLibroDiario.grabarLibroDiario",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "Grabar Libro Diario (PDF)"
+                    },
+                    "gestionNumeracion": {
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.gestionNumeracion.gestionNumeracion",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "{i18n>gestionNumeracionBtn}"
+                    }
+                  }
+                },
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                  "filterFields": {
+                    "DocumentDate": {
+                      "settings": {
+                        "operatorConfiguration": [
+                          {
+                            "path": "key",
+                            "equals": "TODAY",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "THISQUARTER",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTQUARTER",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTQUARTER",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTYEAR",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "DATE",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "DATETOYEAR",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTDAYS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTWEEKS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTMONTHS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTQUARTERS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTYEARS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTDAYS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTWEEKS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTMONTHS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTQUARTERS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTYEARS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "YESTERDAY",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "TOMORROW",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "YEARTODATE",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTWEEK",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTMONTH",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LASTYEAR",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTWEEK",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXTMONTH",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "QUARTER1",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "QUARTER2",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "QUARTER3",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "QUARTER4",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "TO",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "TODAYFROMTO",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "THISWEEK",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "THISMONTH",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "THISYEAR",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "LAST",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "NEXT",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "DAYS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "WEEKS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "MONTHS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "YEARS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "QUARTERS",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "SPECIFICMONTH",
+                            "exclude": true
+                          },
+                          {
+                            "path": "key",
+                            "equals": "SPECIFICMONTHINYEAR",
+                            "exclude": true
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "GestionNumeracionList": {
+          "type": "Component",
+          "id": "GestionNumeracionList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/PeriodoNumerado",
+              "variantManagement": "Page",
+              "navigation": {},
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  },
+                  "actions": {
+                    "anularNumeracion": {
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.gestionNumeracion.anularNumeracion",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{i18n>anularNumeracionBtn}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "controllerExtensions": {
+      "sap.fe.templates.ListReport.ListReportController": {
+        "controllerName": "info.infocenter.librodiarioreporte.ext.controller.ListController"
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "infoinfocenterlibrodiarioreporte"
+  }
+}

@@ -142,6 +142,78 @@
           </Record>
         </Annotation>
       </Annotations>
+
+      <!-- ============================================================ -->
+      <!-- Gestión de Numeración (PeriodoNumerado)                      -->
+      <!-- ============================================================ -->
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType">
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Companycode"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Fiscalyear"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Periodo"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="CantidadAsientos"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="NumeradorDesde"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="NumeradorHasta"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="FechaGeneracion"/></Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="Estado"/>
+              <PropertyValue Property="Criticality" Path="CriticidadEstado"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>Companycode</PropertyPath>
+            <PropertyPath>Fiscalyear</PropertyPath>
+            <PropertyPath>Periodo</PropertyPath>
+          </Collection>
+        </Annotation>
+      </Annotations>
+
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/Companycode">
+        <Annotation Term="Common.Label" String="Sociedad"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/Fiscalyear">
+        <Annotation Term="Common.Label" String="Ejercicio Fiscal"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/Periodo">
+        <Annotation Term="Common.Label" String="Período"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/CantidadAsientos">
+        <Annotation Term="Common.Label" String="Cantidad de Asientos"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/CantidadRegistros">
+        <Annotation Term="Common.Label" String="Cantidad de Registros"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/NumeradorDesde">
+        <Annotation Term="Common.Label" String="Numerador Desde"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/NumeradorHasta">
+        <Annotation Term="Common.Label" String="Numerador Hasta"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/FechaGeneracion">
+        <Annotation Term="Common.Label" String="Fecha de Generación"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/Estado">
+        <Annotation Term="Common.Label" String="Estado"/>
+      </Annotations>
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.PeriodoNumeradoType/UltimoPeriodo">
+        <Annotation Term="Common.Label" String="Último Período"/>
+      </Annotations>
+
+      <Annotations Target="com.sap.gateway.srvd.zsd_ld6_numerados.v0001.Container/PeriodoNumerado">
+        <Annotation Term="SAP__capabilities.FilterRestrictions">
+          <Record Type="SAP__capabilities.FilterRestrictionsType">
+            <PropertyValue Property="RequiredProperties">
+              <Collection>
+                <PropertyPath>Companycode</PropertyPath>
+                <PropertyPath>Fiscalyear</PropertyPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
     </Schema>
   </edmx:DataServices>
 </edmx:Edmx>

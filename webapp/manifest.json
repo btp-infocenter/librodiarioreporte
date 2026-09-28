@@ -5,7 +5,7 @@
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
-      "version": "0.0.1"
+      "version": "0.0.2"
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
@@ -118,6 +118,11 @@
           "pattern": ":?query:",
           "name": "LibroDiarioNumeradoList",
           "target": "LibroDiarioNumeradoList"
+        },
+        {
+          "pattern": "PeriodoNumerado:?query:",
+          "name": "GestionNumeracionList",
+          "target": "GestionNumeracionList"
         }
       ],
       "targets": {
@@ -149,6 +154,13 @@
                       "enabled": true,
                       "requiresSelection": false,
                       "text": "Grabar Libro Diario (PDF)"
+                    },
+                    "gestionNumeracion": {
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.gestionNumeracion.gestionNumeracion",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "{i18n>gestionNumeracionBtn}"
                     }
                   }
                 },
@@ -380,6 +392,34 @@
               }
             }
           }
+        },
+        "GestionNumeracionList": {
+          "type": "Component",
+          "id": "GestionNumeracionList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/PeriodoNumerado",
+              "variantManagement": "Page",
+              "navigation": {},
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  },
+                  "actions": {
+                    "anularNumeracion": {
+                      "press": "info.infocenter.librodiarioreporte.ext.controller.gestionNumeracion.anularNumeracion",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": true,
+                      "text": "{i18n>anularNumeracionBtn}"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -395,6 +435,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "infoinfocenterlibrodiarioreporte"
+    "service": "infolibrodiarioreporte"
   }
 }
