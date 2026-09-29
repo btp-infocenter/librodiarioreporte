@@ -36,9 +36,7 @@
             <Record Type="UI.DataField"><PropertyValue Property="Value" Path="AccountingDocument"/></Record>
             <Record Type="UI.DataField"><PropertyValue Property="Value" Path="GLAccount"/></Record>
             <Record Type="UI.DataField"><PropertyValue Property="Value" Path="GLAccountName"/></Record>
-            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="AccountingDocumentTypeText"/></Record>
-            <!-- CAMBIO: Moneda ahora muestra CompanyCodeCurrency en vez de TransactionCurrency -->
-            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="CompanyCodeCurrency"/></Record>
+            <Record Type="UI.DataField"><PropertyValue Property="Value" Path="TransactionCurrency"/></Record>
             <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Debe"/></Record>
             <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Haber"/></Record>
             <Record Type="UI.DataField"><PropertyValue Property="Value" Path="Numerador"/></Record>

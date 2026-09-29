@@ -1,7 +1,6 @@
 sap.ui.define([
-    "sap/m/MessageToast",
-    "sap/m/MessageBox"
-], function (MessageToast, MessageBox) {
+"sap/m/MessageBox"
+], function (MessageBox) {
     'use strict';
 
     const grabarLibroHelper = {
@@ -12,7 +11,7 @@ sap.ui.define([
         _lastDateTo: null,
         _bulkFileName: null,
 
-        grabarLibroDiario: function (oEvent) {
+        grabarLibroDiario: function (_oEvent) {
             grabarLibroHelper._controller = this._controller;
 
             // Obtener el modelo y el blob
@@ -27,7 +26,7 @@ sap.ui.define([
                         title: "Atención",
                         actions: [MessageBox.Action.OK],
                         emphasizedAction: MessageBox.Action.OK,
-                        onClose: function (sAction) {
+                        onClose: function (_sAction) {
                             // Solo cerrar el MessageBox
                         }
                     }
@@ -216,8 +215,6 @@ sap.ui.define([
                 DateFrom: oAttData.dateLow,
                 DateTo: oAttData.dateHigh,
                 Comments: oAttData.comments,
-                zmoneda: oAttData.zmoneda,
-                total_periodo: Number(oAttData.total_periodo || 0).toFixed(2),
                 Mimetype: oAttData.mimetype,
                 Filename: oAttData.filename
             };
@@ -468,20 +465,39 @@ sap.ui.define([
                     }
                 }
 
-                // I) Resumen
-                const total = aRows.length;
-                const created = ok.length;
-                const skipped = aSkippedExists.length;
-                const errors = failed.length;
+                    // I) Resumen
+                    const total = aRows.length;
+                    const created = ok.length;
+                    const skipped = aSkippedExists.length;
+                    const errors = failed.length;
 
-                const msg =
-                    `Procesadas ${total} filas.\n` +
-                    `Creadas: ${created}\n` +
-                    `Reactivadas (estaban anuladas): ${reactivated}` +
-                    (reactivateErrors ? ` (${reactivateErrors} errores)` : ``) + `\n` +
-                    `Omitidas (ya existían): ${skipped}\n` +
-                    (iDupCreate ? `Omitidas (clave repetida en la tabla): ${iDupCreate}\n` : ``) +
-                    `Fallidas: ${errors}`;
+                    // Desglose por mes de los asientos generados (documentos
+                    // distintos: una fila es documento+item+cuenta, un asiento
+                    // puede tener varias filas)
+                    const oAsientosPorMes = new Map();
+                    for (const p of ok) {
+                        const sMes = this._monthKey(p.Documentdate);
+                        if (!oAsientosPorMes.has(sMes)) {
+                            oAsientosPorMes.set(sMes, new Set());
+                        }
+                        oAsientosPorMes.get(sMes).add(p.Accountingdocument);
+                    }
+                    const aMeses = Array.from(oAsientosPorMes.keys()).sort();
+                    let sDesglose = "";
+                    if (aMeses.length) {
+                        sDesglose = "\nAsientos generados por mes:\n" +
+                            aMeses.map(sMes => `  ${this._formatMes(sMes)}: ${oAsientosPorMes.get(sMes).size}`).join("\n");
+                    }
+
+                    const msg =
+                        `Procesadas ${total} filas.\n` +
+                        `Creadas: ${created}\n` +
+                        `Reactivadas (estaban anuladas): ${reactivated}` +
+                        (reactivateErrors ? ` (${reactivateErrors} errores)` : ``) + `\n` +
+                        `Omitidas (ya existían): ${skipped}\n` +
+                        (iDupCreate ? `Omitidas (clave repetida en la tabla): ${iDupCreate}\n` : ``) +
+                        `Fallidas: ${errors}` +
+                        sDesglose;
 
                 // Si querés listar algunas fallidas:
                 if (errors) {
@@ -560,11 +576,10 @@ sap.ui.define([
 
         //Chequear keys
         _readExistingKeys: async function (oModel, aFilters) {
-            // Solo select de las keys (+ Anulado) para minimizar payload.
-            // Devuelve { vigentes: Set<keyStr>, anuladas: Map<keyStr, Context> }:
-            // las vigentes se saltean al grabar, las anuladas se reactivan.
+            // Solo select de las keys expuestas por GrabarNumeradorAsientoType
+            // para minimizar payload y evitar selects de propiedades inexistentes.
             const oList = oModel.bindList("/GrabarNumeradorAsiento", undefined, undefined, aFilters, {
-                $select: "Fiscalyear,Companycode,Accountingdocumenttype,Documentdate,Accountingdocument,Accountingdocumentitem,Glaccount,Anulado"
+                $select: "Fiscalyear,Companycode,Accountingdocumenttype,Documentdate,Accountingdocument,Glaccount"
             });
 
             const PAGE = 400;
@@ -578,27 +593,12 @@ sap.ui.define([
                 for (const c of aCtx) {
                     const o = c.getObject();
                     const keyStr = this._keyString(o); // misma serialización que usarás para payloads
-                    if (o.Anulado) {
-                        // Puede haber varias filas (ítems) por clave doc+cuenta:
-                        // hay que reactivarlas todas
-                        if (!anuladas.has(keyStr)) {
-                            anuladas.set(keyStr, []);
-                        }
-                        anuladas.get(keyStr).push(c);
-                    } else {
-                        vigentes.add(keyStr);
-                    }
+                    vigentes.add(keyStr);
                 }
                 i += aCtx.length;
                 if (aCtx.length < PAGE) break;
             }
             return { vigentes: vigentes, anuladas: anuladas };
-        },
-
-        // El backend es numc(3): la tabla de lectura trae "1" pero el servicio
-        // devuelve "001". Sin normalizar, el pre-chequeo de existentes nunca matchea.
-        _padItem: function (v) {
-            return String(v ?? "").padStart(3, "0");
         },
 
         // Serializador consistente de la “composite key”
@@ -610,7 +610,6 @@ sap.ui.define([
                 `Accountingdocumenttype='${o.Accountingdocumenttype || o.AccountingDocumentType}'`,
                 `Documentdate=${(o.Documentdate || o.DocumentDate)}`,
                 `Accountingdocument='${o.Accountingdocument || o.AccountingDocument}'`,
-                `Accountingdocumentitem='${this._padItem(o.Accountingdocumentitem || o.AccountingDocumentItem)}'`,
                 `Glaccount='${o.Glaccount || o.GLAccount}'`
             ].join(",");
         },
@@ -626,14 +625,26 @@ sap.ui.define([
                 Accountingdocumenttype: oRow.AccountingDocumentType,
                 Documentdate: oRow.DocumentDate,        // "YYYY-MM-DD"
                 Accountingdocument: oRow.AccountingDocument,
-                // Es clave en ZTB_LIB_DIA_NUM: sin esto todos los items del
-                // mismo documento+cuenta colisionan en '000'.
-                Accountingdocumentitem: this._padItem(oRow.AccountingDocumentItem),
                 Glaccount: oRow.GLAccount,
                 Glaccountname: oRow.GLAccountName || "", // requerido en el servicio
                 FileName: this._bulkFileName || "bulk-numerador.json", // requerido
                 Numerador: oRow.Numerador            // tu numeración calculada
             };
+        },
+
+        // "2026-01-15" (o Date) → "2026-01"
+        _monthKey: function (d) {
+            if (d instanceof Date && !Number.isNaN(d.getTime())) {
+                return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+            }
+            const s = String(d || "");
+            return s.length >= 7 ? s.substring(0, 7) : "sin fecha";
+        },
+
+        // "2026-01" → "01/2026"
+        _formatMes: function (sMes) {
+            const a = sMes.split("-");
+            return a.length === 2 ? `${a[1]}/${a[0]}` : sMes;
         },
 
     };
