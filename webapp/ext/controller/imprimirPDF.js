@@ -89,7 +89,7 @@ sap.ui.define([
         return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
     }
     //Armar el content del PDF con salto de página si no entra
-    function generarLibroDiario(datosLibroDiario) {
+    function generarLibroDiario(datosLibroDiario, saldoInicialDebe, saldoInicialHaber) {
         const alturaHoja = 742;
         const alturaCabezera = 39;
         const alturaDescripcionTotal = 32;
@@ -119,8 +119,11 @@ sap.ui.define([
 
         const content = [];
         let alturaAcumulada = 0;
-        let transporteDebe = 0;
-        let transporteHaber = 0;
+        // El transporte arranca desde el saldo acumulado del año hasta el mes
+        // anterior (saldo anterior): el PDF refleja acumulado año a la fecha,
+        // no solo los movimientos del mes impreso.
+        let transporteDebe = saldoInicialDebe || 0;
+        let transporteHaber = saldoInicialHaber || 0;
 
         for (let i = 0; i < agrupados.length; i++) {
             const grupo = agrupados[i];
@@ -166,7 +169,7 @@ sap.ui.define([
                 }
 
                 // Procesar cada sub-grupo
-                subGrupos.forEach((subGrupo, subIndex) => {
+                subGrupos.forEach((subGrupo) => {
                     subGrupo.registros.forEach((registro, index) => {
                         const isFirst = index === 0 && subGrupo.esPrimerSubGrupo;
                         const mostrarNumeroAsiento = isFirst;
@@ -341,14 +344,15 @@ sap.ui.define([
         console.log(`Content limpiado: ${content.length} → ${cleaned.length} elementos`);
         return cleaned;
     }
-    function buildCabeceraHoja(titulo, columnas) {
+    function buildCabeceraHoja(titulo, columnas, saldoAnteriorTexto) {
         return [
             {
                 text: titulo,
                 alignment: "center",
                 bold: true,
                 fontSize: 10,
-                margin: [0, 0, 0, 10]
+                margin: [0, 0, 0, 10],
+                saldoAnteriorTexto: saldoAnteriorTexto
             },
             {
                 canvas: [{ type: "line", x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1 }],
@@ -383,6 +387,50 @@ sap.ui.define([
         ];
     }
 
+    function normalizarFechaISO(v) {
+        if (v instanceof Date && !Number.isNaN(v.getTime())) {
+            return v.getFullYear() + "-" + String(v.getMonth() + 1).padStart(2, "0") + "-" + String(v.getDate()).padStart(2, "0");
+        }
+        return String(v || "").substring(0, 10);
+    }
+
+    function crearFechaLocal(sISO) {
+        const a = normalizarFechaISO(sISO).split("-").map(Number);
+        if (a.length !== 3 || a.some(Number.isNaN)) {
+            return null;
+        }
+        return new Date(a[0], a[1] - 1, a[2]);
+    }
+
+    function formatearFechaISO(d) {
+        return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    }
+
+    function validarMesCalendarioCompleto(dateLow, dateHigh) {
+        const dLow = crearFechaLocal(dateLow);
+        const dHigh = crearFechaLocal(dateHigh);
+        if (!dLow || !dHigh) {
+            throw new Error("Debe seleccionar un rango de fechas para generar el PDF.");
+        }
+
+        const mismoMes = dLow.getFullYear() === dHigh.getFullYear() && dLow.getMonth() === dHigh.getMonth();
+        const ultimoDiaMes = new Date(dLow.getFullYear(), dLow.getMonth() + 1, 0).getDate();
+        if (!mismoMes || dLow.getDate() !== 1 || dHigh.getDate() !== ultimoDiaMes) {
+            throw new Error("El rango de fechas debe corresponder a un mes calendario completo.");
+        }
+
+        return dLow;
+    }
+
+    function formatearImporte(v) {
+        return Number(v || 0).toLocaleString("de-DE");
+    }
+
+    const MESES_ES = [
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+
     const transformarDatos = (aDatos) => {
         return aDatos.map((item) => {
             // Corregir fecha
@@ -408,14 +456,6 @@ sap.ui.define([
             };
         });
     };
-
-    function splitIntoChunks(array, chunkSize) {
-        const result = [];
-        for (let i = 0; i < array.length; i += chunkSize) {
-            result.push(array.slice(i, i + chunkSize));
-        }
-        return result;
-    }
 
     // Convert pdfMake docDefinition to jsPDF with autoTable
     // function convertToJsPDF(docDefinition) {
@@ -677,6 +717,56 @@ sap.ui.define([
             }
         },
 
+        calcularSaldoAnterior: async function (oModel, companyCode, dMesSeleccionado) {
+            if (dMesSeleccionado.getMonth() === 0) {
+                return { texto: "Saldo inicial: 0", debe: 0, haber: 0 };
+            }
+
+            const dDesde = new Date(dMesSeleccionado.getFullYear(), 0, 1);
+            const dHasta = new Date(dMesSeleccionado.getFullYear(), dMesSeleccionado.getMonth(), 0);
+            const aFilters = [
+                new Filter("DocumentDate", FilterOperator.GE, formatearFechaISO(dDesde)),
+                new Filter("DocumentDate", FilterOperator.LE, formatearFechaISO(dHasta))
+            ];
+
+            if (companyCode) {
+                aFilters.push(new Filter("CompanyCode", FilterOperator.EQ, companyCode));
+            }
+
+            const oList = oModel.bindList("/LibroDiarioNumerado", undefined, undefined, aFilters, {
+                $select: "Debe,Haber"
+            });
+
+            const PAGE = 500;
+            let iStart = 0;
+            let nDebe = 0;
+            let nHaber = 0;
+
+            while (true) {
+                const aContexts = await oList.requestContexts(iStart, PAGE);
+                if (!aContexts.length) {
+                    break;
+                }
+
+                aContexts.forEach((oContext) => {
+                    const o = oContext.getObject();
+                    nDebe += Number(o.Debe || 0);
+                    nHaber += Number(o.Haber || 0);
+                });
+
+                iStart += aContexts.length;
+                if (aContexts.length < PAGE) {
+                    break;
+                }
+            }
+
+            return {
+                texto: `Saldo de ${MESES_ES[dHasta.getMonth()]}: ${formatearImporte(nDebe - nHaber)}`,
+                debe: nDebe,
+                haber: nHaber
+            };
+        },
+
         convertToJsPDFOptimized: async function (docDefinition, totalRecords) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'pt', 'a4');
@@ -694,22 +784,26 @@ sap.ui.define([
                 oBusyDialog.setText(`Generando PDF: ${progress}%`);
 
                 chunk.forEach((item) => {
-                    let skipPageCheck = false;
-
                     if (typeof item === 'object') {
-                        if (item.text && item.alignment === 'center' && item.bold) {
-                            // Title
-                            doc.setFontSize(item.fontSize || 10);
-                            doc.setFont('helvetica', 'bold');
-                            doc.text(item.text, doc.internal.pageSize.width / 2, currentY, { align: 'center' });
-                            currentY += item.margin ? item.margin[3] + 10 : 20;
+                            if (item.text && item.alignment === 'center' && item.bold) {
+                                // Title
+                                doc.setFontSize(item.fontSize || 10);
+                                doc.setFont('helvetica', 'bold');
+                                doc.text(item.text, doc.internal.pageSize.width / 2, currentY, { align: 'center' });
+
+                                if (item.saldoAnteriorTexto && currentPage === 1) {
+                                    doc.setFontSize(8);
+                                    doc.setFont('helvetica', 'bold');
+                                    doc.text(item.saldoAnteriorTexto, 555, currentY, { align: 'right' });
+                                }
+
+                                currentY += item.margin ? item.margin[3] + 10 : 20;
                         } else if (item.canvas) {
                             // Line - NO verificar altura, confiar en generarLibroDiario
                             const line = item.canvas[0];
                             doc.setLineWidth(line.lineWidth || 0.8);
                             doc.line(40, currentY, 555, currentY);
                             currentY += item.margin ? item.margin[3] + 5 : 10;
-                            skipPageCheck = true; // No verificar después de líneas
                         } else if (item.columns) {
                             if (item.columns.every(col => col.bold) && item.columns.length === 6) {
                                 // Header row
@@ -751,7 +845,6 @@ sap.ui.define([
                                 doc.text(haberText, xHaber, currentY, { align: 'right' });
 
                                 currentY += 8;
-                                skipPageCheck = true; // No verificar después de totales/transporte
                             } else {
                                 // Regular data row (6 columns) - ÚNICO lugar donde verificar altura
                                 const alturaFila = 13;
@@ -781,7 +874,6 @@ sap.ui.define([
                                     xPos += colWidths[idx];
                                 });
                                 currentY += 10;
-                                skipPageCheck = true; // Ya verificamos arriba
                             }
                         } else if (item.text && item.bold && !item.alignment) {
                             // Description text - NO hacer pageBreak automático
@@ -790,7 +882,6 @@ sap.ui.define([
                             doc.setFont('helvetica', 'bold');
                             doc.text(item.text, 45, currentY);
                             currentY += 6;
-                            skipPageCheck = true;
                         } else if (item.pageBreak === 'after') {
                             // PageBreak explícito - SIEMPRE procesarlo
                             doc.addPage();
@@ -798,7 +889,6 @@ sap.ui.define([
                             currentPage++;
                             this._addPageHeader(doc, currentY);
                             currentY += 55;
-                            skipPageCheck = true;
                         }
 
                         // ⭐ ELIMINADO: Ya no hay verificación de altura al final
@@ -882,8 +972,13 @@ sap.ui.define([
                 // Obtener parámetros para metadata del archivo
                 const fiscalYear = filterBarConditions?.FiscalYear?.[0]?.values?.[0];
                 const companyCode = filterBarConditions?.CompanyCode?.[0]?.values?.[0];
-                const dateLow = filterBarConditions?.DocumentDate?.[0]?.values?.[0];
-                const dateHigh = filterBarConditions?.DocumentDate?.[0]?.values?.[1];
+                const aDocumentDateConditions = filterBarConditions?.DocumentDate || [];
+                if (aDocumentDateConditions.length !== 1 || (aDocumentDateConditions[0]?.values || []).length < 2) {
+                    throw new Error("Debe seleccionar un único rango mensual completo en Fecha del Documento.");
+                }
+                const dateLow = aDocumentDateConditions[0].values[0];
+                const dateHigh = aDocumentDateConditions[0].values[1];
+                const dMesSeleccionado = validarMesCalendarioCompleto(dateLow, dateHigh);
 
                 await PdfHelper._loadJsPDF();
 
@@ -902,6 +997,13 @@ sap.ui.define([
                 }
 
                 // Actualizar progress en busy dialog
+                oBusyDialog.setText("Calculando saldo anterior...");
+                const saldoAnterior = await PdfHelper.calcularSaldoAnterior(
+                    this._controller.getOwnerComponent().getModel(),
+                    companyCode,
+                    dMesSeleccionado
+                );
+
                 oBusyDialog.setText("Cargando datos...");
 
                 // Usar procesamiento por chunks para evitar crashes
@@ -913,7 +1015,7 @@ sap.ui.define([
                 oBusyDialog.setText("Generando PDF...");
                 const datosClonados = JSON.parse(JSON.stringify(datosTransformados));
 
-                const docDefinition = PdfHelper._buildLibroDiarioPDF(datosClonados);
+                const docDefinition = PdfHelper._buildLibroDiarioPDF(datosClonados, saldoAnterior);
 
                 // Procesamiento optimizado para documentos grandes
                 const doc = await PdfHelper.convertToJsPDFOptimized(docDefinition, totalRecords);
@@ -996,10 +1098,14 @@ sap.ui.define([
                 tryLoad(0);
             });
         },
-        _buildLibroDiarioPDF: function (datosLibroDiario) {
+        _buildLibroDiarioPDF: function (datosLibroDiario, saldoAnterior) {
             const columnas = ["Nro Asiento", "Fecha", "Cuenta", "Descripción de Cuenta", "Debe", "Haber"];
-            const cabecera = buildCabeceraHoja("Libro Diario", columnas);
-            const contenido = generarLibroDiario(datosLibroDiario);
+            const cabecera = buildCabeceraHoja("Libro Diario", columnas, saldoAnterior && saldoAnterior.texto);
+            const contenido = generarLibroDiario(
+                datosLibroDiario,
+                saldoAnterior && saldoAnterior.debe,
+                saldoAnterior && saldoAnterior.haber
+            );
 
             // ⭐ Limpiar content array antes de usarlo
             const contenidoLimpio = limpiarContentArray(contenido);

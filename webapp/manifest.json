@@ -111,6 +111,15 @@
         }
       ]
     },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ListReport.ListReportController": {
+            "controllerName": "info.infocenter.librodiarioreporte.ext.controller.ListController"
+          }
+        }
+      }
+    },
     "routing": {
       "config": {},
       "routes": [
@@ -421,11 +430,6 @@
             }
           }
         }
-      }
-    },
-    "controllerExtensions": {
-      "sap.fe.templates.ListReport.ListReportController": {
-        "controllerName": "info.infocenter.librodiarioreporte.ext.controller.ListController"
       }
     }
   },
