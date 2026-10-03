@@ -7,7 +7,7 @@
         "AccountingDocument": "1000000001",
         "GLAccount": "1100001000",
         "GLAccountName": "Caja y Bancos",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 12500.75,
         "Haber": 0,
         "Numerador": 1
@@ -20,7 +20,7 @@
         "AccountingDocument": "1000000002",
         "GLAccount": "1100002000",
         "GLAccountName": "Clientes Locales",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 25001.5,
         "Haber": 16901,
         "Numerador": 2
@@ -33,7 +33,7 @@
         "AccountingDocument": "1000000003",
         "GLAccount": "1100003000",
         "GLAccountName": "Proveedores Locales",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 37502.25,
         "Haber": 0,
         "Numerador": 3
@@ -46,7 +46,7 @@
         "AccountingDocument": "1000000004",
         "GLAccount": "1100004000",
         "GLAccountName": "Ventas Gravadas",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 50003,
         "Haber": 33802,
         "Numerador": 4
@@ -59,7 +59,7 @@
         "AccountingDocument": "1000000005",
         "GLAccount": "1100005000",
         "GLAccountName": "IVA Credito Fiscal",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 62503.75,
         "Haber": 0,
         "Numerador": 5
@@ -72,7 +72,7 @@
         "AccountingDocument": "1000000006",
         "GLAccount": "1100006000",
         "GLAccountName": "IVA Debito Fiscal",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 75004.5,
         "Haber": 50703,
         "Numerador": 6
@@ -85,7 +85,7 @@
         "AccountingDocument": "1000000007",
         "GLAccount": "1100007000",
         "GLAccountName": "Gastos Administrativos",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 87505.25,
         "Haber": 0,
         "Numerador": 7
@@ -98,7 +98,7 @@
         "AccountingDocument": "1000000008",
         "GLAccount": "1100008000",
         "GLAccountName": "Sueldos y Jornales",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 100006,
         "Haber": 67604,
         "Numerador": 8
@@ -111,7 +111,7 @@
         "AccountingDocument": "1000000009",
         "GLAccount": "1100009000",
         "GLAccountName": "Mercaderias",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 112506.75,
         "Haber": 0,
         "Numerador": 9
@@ -124,7 +124,7 @@
         "AccountingDocument": "1000000010",
         "GLAccount": "1100010000",
         "GLAccountName": "Resultado del Ejercicio",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 125007.5,
         "Haber": 84505,
         "Numerador": 10
@@ -137,7 +137,7 @@
         "AccountingDocument": "1000000011",
         "GLAccount": "1100001000",
         "GLAccountName": "Caja y Bancos",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 137508.25,
         "Haber": 0,
         "Numerador": 11
@@ -150,7 +150,7 @@
         "AccountingDocument": "1000000012",
         "GLAccount": "1100002000",
         "GLAccountName": "Clientes Locales",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 150009,
         "Haber": 101406,
         "Numerador": 12
@@ -163,7 +163,7 @@
         "AccountingDocument": "1000000013",
         "GLAccount": "1100003000",
         "GLAccountName": "Proveedores Locales",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 162509.75,
         "Haber": 0,
         "Numerador": 13
@@ -176,7 +176,7 @@
         "AccountingDocument": "1000000014",
         "GLAccount": "1100004000",
         "GLAccountName": "Ventas Gravadas",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 175010.5,
         "Haber": 118307,
         "Numerador": 14
@@ -189,7 +189,7 @@
         "AccountingDocument": "1000000015",
         "GLAccount": "1100005000",
         "GLAccountName": "IVA Credito Fiscal",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 187511.25,
         "Haber": 0,
         "Numerador": 15
@@ -202,7 +202,7 @@
         "AccountingDocument": "1000000016",
         "GLAccount": "1100006000",
         "GLAccountName": "IVA Debito Fiscal",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 200012,
         "Haber": 135208,
         "Numerador": 16
@@ -215,7 +215,7 @@
         "AccountingDocument": "1000000017",
         "GLAccount": "1100007000",
         "GLAccountName": "Gastos Administrativos",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 212512.75,
         "Haber": 0,
         "Numerador": 17
@@ -228,7 +228,7 @@
         "AccountingDocument": "1000000018",
         "GLAccount": "1100008000",
         "GLAccountName": "Sueldos y Jornales",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 225013.5,
         "Haber": 152109,
         "Numerador": 18
@@ -241,7 +241,7 @@
         "AccountingDocument": "1000000019",
         "GLAccount": "1100009000",
         "GLAccountName": "Mercaderias",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 237514.25,
         "Haber": 0,
         "Numerador": 19
@@ -254,7 +254,7 @@
         "AccountingDocument": "1000000020",
         "GLAccount": "1100010000",
         "GLAccountName": "Resultado del Ejercicio",
-        "TransactionCurrency": "CLP",
+        "TransactionCurrency": "PYG",
         "Debe": 250015,
         "Haber": 169010,
         "Numerador": 20
