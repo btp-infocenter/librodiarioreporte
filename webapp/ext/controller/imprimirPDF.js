@@ -724,9 +724,11 @@ sap.ui.define([
 
             const dDesde = new Date(dMesSeleccionado.getFullYear(), 0, 1);
             const dHasta = new Date(dMesSeleccionado.getFullYear(), dMesSeleccionado.getMonth(), 0);
+            // Un solo filtro BT: el modelo OData V4 combina con OR los filtros
+            // que apuntan al mismo campo dentro de un array, asi que GE + LE
+            // por separado devolvian todo el dataset.
             const aFilters = [
-                new Filter("DocumentDate", FilterOperator.GE, formatearFechaISO(dDesde)),
-                new Filter("DocumentDate", FilterOperator.LE, formatearFechaISO(dHasta))
+                new Filter("DocumentDate", FilterOperator.BT, formatearFechaISO(dDesde), formatearFechaISO(dHasta))
             ];
 
             if (companyCode) {
