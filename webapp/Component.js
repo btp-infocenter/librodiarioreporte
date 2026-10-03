@@ -90,7 +90,8 @@ sap.ui.define(
                 return undefined;
             }
 
-            var countMatch = responseText.match(/"@odata\.count"\s*:\s*(\d+)/);
+            // El backend puede serializar el count como numero o como string (Edm.Int64).
+            var countMatch = responseText.match(/"@odata\.count"\s*:\s*"?(\d+)"?/);
 
             if (countMatch) {
                 return Number(countMatch[1]);
@@ -99,8 +100,8 @@ sap.ui.define(
             try {
                 var payload = JSON.parse(responseText);
 
-                if (typeof payload["@odata.count"] === "number") {
-                    return payload["@odata.count"];
+                if (typeof payload["@odata.count"] === "number" || /^\d+$/.test(payload["@odata.count"])) {
+                    return Number(payload["@odata.count"]);
                 }
 
                 if (Array.isArray(payload.value)) {
