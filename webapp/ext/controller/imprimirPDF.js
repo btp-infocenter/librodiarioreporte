@@ -88,6 +88,16 @@ sap.ui.define([
         // Remover puntos (separador de miles) y reemplazar coma por punto (decimal)
         return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
     }
+    // El salto de página lleva el transporte vigente para repetirlo en la
+    // cabecera de la hoja siguiente (mismo valor que la fila "Transporte"
+    // al pie de la hoja anterior).
+    function crearSaltoPagina(transporteDebe, transporteHaber) {
+        return {
+            text: "",
+            pageBreak: "after",
+            transporte: { debe: transporteDebe, haber: transporteHaber }
+        };
+    }
     //Armar el content del PDF con salto de página si no entra
     function generarLibroDiario(datosLibroDiario, saldoInicialDebe, saldoInicialHaber) {
         const alturaHoja = 742;
@@ -145,7 +155,7 @@ sap.ui.define([
                             ]
                         },
                         { canvas: [{ type: "line", x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 0.8 }], margin: [0, 2, 0, 0] },
-                        { text: "", pageBreak: "after" }
+                        crearSaltoPagina(transporteDebe, transporteHaber)
                     );
 
                     alturaAcumulada = 0;
@@ -206,7 +216,7 @@ sap.ui.define([
 
                     // Salto de página después de cada sub-grupo (excepto el último)
                     if (!subGrupo.esUltimoSubGrupo) {
-                        content.push({ text: "", pageBreak: "after" });
+                        content.push(crearSaltoPagina(transporteDebe, transporteHaber));
                     }
                 });
 
@@ -265,7 +275,7 @@ sap.ui.define([
                         noPageBreakBefore: true  // ← Flag para evitar salto antes del Transporte
                     },
                     { canvas: [{ type: "line", x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 0.8 }], margin: [0, 2, 0, 0], noPageBreakBefore: true },
-                    { text: "", pageBreak: "after" }
+                    crearSaltoPagina(transporteDebe, transporteHaber)
                 );
 
                 alturaAcumulada = 0;
@@ -344,7 +354,7 @@ sap.ui.define([
         console.log(`Content limpiado: ${content.length} → ${cleaned.length} elementos`);
         return cleaned;
     }
-    function buildCabeceraHoja(titulo, columnas, saldoAnteriorTexto) {
+    function buildCabeceraHoja(titulo, columnas, saldoAnterior) {
         return [
             {
                 text: titulo,
@@ -352,7 +362,7 @@ sap.ui.define([
                 bold: true,
                 fontSize: 10,
                 margin: [0, 0, 0, 10],
-                saldoAnteriorTexto: saldoAnteriorTexto
+                saldoAnterior: saldoAnterior
             },
             {
                 canvas: [{ type: "line", x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1 }],
@@ -719,7 +729,7 @@ sap.ui.define([
 
         calcularSaldoAnterior: async function (oModel, companyCode, dMesSeleccionado) {
             if (dMesSeleccionado.getMonth() === 0) {
-                return { texto: "Saldo inicial: 0", debe: 0, haber: 0 };
+                return { etiqueta: "Saldo inicial", debe: 0, haber: 0 };
             }
 
             const dDesde = new Date(dMesSeleccionado.getFullYear(), 0, 1);
@@ -763,7 +773,7 @@ sap.ui.define([
             }
 
             return {
-                texto: `Saldo de ${MESES_ES[dHasta.getMonth()]}: ${formatearImporte(nDebe - nHaber)}`,
+                etiqueta: `Saldo de ${MESES_ES[dHasta.getMonth()]}`,
                 debe: nDebe,
                 haber: nHaber
             };
@@ -775,6 +785,8 @@ sap.ui.define([
 
             let currentY = 60;
             let currentPage = 1;
+            // Último transporte emitido: se repite en la cabecera de cada hoja nueva
+            let ultimoTransporte = null;
 
             const content = docDefinition.content;
             const chunkSize = totalRecords > 1000 ? 50 : 100;
@@ -793,10 +805,8 @@ sap.ui.define([
                                 doc.setFont('helvetica', 'bold');
                                 doc.text(item.text, doc.internal.pageSize.width / 2, currentY, { align: 'center' });
 
-                                if (item.saldoAnteriorTexto && currentPage === 1) {
-                                    doc.setFontSize(8);
-                                    doc.setFont('helvetica', 'bold');
-                                    doc.text(item.saldoAnteriorTexto, 555, currentY, { align: 'right' });
+                                if (item.saldoAnterior && currentPage === 1) {
+                                    this._dibujarSaldoCabecera(doc, currentY, item.saldoAnterior);
                                 }
 
                                 currentY += item.margin ? item.margin[3] + 10 : 20;
@@ -854,7 +864,7 @@ sap.ui.define([
                                     doc.addPage();
                                     currentY = 60;
                                     currentPage++;
-                                    this._addPageHeader(doc, currentY);
+                                    this._addPageHeader(doc, currentY, ultimoTransporte);
                                     currentY += 55;
                                 }
 
@@ -886,10 +896,13 @@ sap.ui.define([
                             currentY += 6;
                         } else if (item.pageBreak === 'after') {
                             // PageBreak explícito - SIEMPRE procesarlo
+                            if (item.transporte) {
+                                ultimoTransporte = item.transporte;
+                            }
                             doc.addPage();
                             currentY = 60;
                             currentPage++;
-                            this._addPageHeader(doc, currentY);
+                            this._addPageHeader(doc, currentY, ultimoTransporte);
                             currentY += 55;
                         }
 
@@ -905,10 +918,36 @@ sap.ui.define([
             return doc;
         },
 
-        _addPageHeader: function (doc, startY) {
+        // Bloque de saldo en la esquina superior derecha: etiqueta y los
+        // importes de Debe y Haber por separado (nunca el neto).
+        _dibujarSaldoCabecera: function (doc, yTitulo, saldo) {
+            const xEtiquetas = 450;
+            const xImportes = 555;
+            const altoLinea = 9;
+
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            doc.text(saldo.etiqueta, xEtiquetas, yTitulo - altoLinea);
+
+            doc.setFont('helvetica', 'normal');
+            doc.text("Debe:", xEtiquetas, yTitulo);
+            doc.text(formatearImporte(saldo.debe), xImportes, yTitulo, { align: 'right' });
+            doc.text("Haber:", xEtiquetas, yTitulo + altoLinea);
+            doc.text(formatearImporte(saldo.haber), xImportes, yTitulo + altoLinea, { align: 'right' });
+        },
+
+        _addPageHeader: function (doc, startY, transporte) {
             doc.setFontSize(10);
             doc.setFont('helvetica', 'bold');
             doc.text("Libro Diario", doc.internal.pageSize.width / 2, startY, { align: 'center' });
+
+            if (transporte) {
+                this._dibujarSaldoCabecera(doc, startY, {
+                    etiqueta: "Transporte",
+                    debe: transporte.debe,
+                    haber: transporte.haber
+                });
+            }
 
             // Add header line
             doc.setLineWidth(1);
@@ -1102,7 +1141,7 @@ sap.ui.define([
         },
         _buildLibroDiarioPDF: function (datosLibroDiario, saldoAnterior) {
             const columnas = ["Nro Asiento", "Fecha", "Cuenta", "Descripción de Cuenta", "Debe", "Haber"];
-            const cabecera = buildCabeceraHoja("Libro Diario", columnas, saldoAnterior && saldoAnterior.texto);
+            const cabecera = buildCabeceraHoja("Libro Diario", columnas, saldoAnterior || null);
             const contenido = generarLibroDiario(
                 datosLibroDiario,
                 saldoAnterior && saldoAnterior.debe,
