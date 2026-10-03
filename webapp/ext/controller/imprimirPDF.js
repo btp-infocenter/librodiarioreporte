@@ -762,8 +762,11 @@ sap.ui.define([
 
                 aContexts.forEach((oContext) => {
                     const o = oContext.getObject();
-                    nDebe += Number(o.Debe || 0);
-                    nHaber += Number(o.Haber || 0);
+                    // Mismo criterio que las filas del PDF (transformarDatos):
+                    // el backend trae el Haber en negativo, el documento muestra
+                    // ambos lados en positivo.
+                    nDebe += Math.abs(Number(o.Debe || 0));
+                    nHaber += Math.abs(Number(o.Haber || 0));
                 });
 
                 iStart += aContexts.length;
